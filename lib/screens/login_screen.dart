@@ -4,6 +4,8 @@ import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'sign_up_screen.dart';
 
+/// User Story 2 (Application login) + Story 3 (error feedback when
+/// fields are empty or credentials are incorrect).
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -48,7 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result.success) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => HomeScreen(username: result.message),
+          builder: (_) => HomeScreen(
+            username: result.message,
+            email: result.user?.email ?? _emailController.text.trim(),
+          ),
         ),
       );
     } else {
@@ -80,7 +85,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    
+                    Icon(
+                      Icons.lock_person_outlined,
+                      size: 56,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'Welcome back',

@@ -5,10 +5,12 @@ import '../models/task.dart';
 import '../services/habit_service.dart';
 import 'configure_habits_screen.dart';
 import 'login_screen.dart';
+import 'personal_info_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String username;
-  const HomeScreen({super.key, required this.username});
+  final String email;
+  const HomeScreen({super.key, required this.username, required this.email});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -20,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Task> _tasks = [];
   List<Habit> _habits = [];
+  late String _displayUsername;
+  late String _currentEmail;
 
   List<Task> get _pendingTasks => _tasks.where((t) => !t.isDone).toList();
   List<Task> get _doneTasks    => _tasks.where((t) => t.isDone).toList();
@@ -27,6 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _displayUsername = widget.username;
+    _currentEmail    = widget.email;
     _loadHabits();
   }
 
@@ -131,7 +137,20 @@ class _HomeScreenState extends State<HomeScreen> {
           _drawerItem(
             icon: Icons.person_outline,
             label: 'Personal Info',
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () async {
+              Navigator.of(context).pop();
+              await Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => PersonalInfoScreen(
+                  currentEmail: _currentEmail,
+                  onUpdated: (updated) {
+                    setState(() {
+                      _displayUsername = updated.username;
+                      _currentEmail    = updated.email;
+                    });
+                  },
+                ),
+              ));
+            },
           ),
           _drawerItem(
             icon: Icons.bar_chart,
@@ -277,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
-        title: Text(widget.username,
+        title: Text(_displayUsername,
             style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Column(
