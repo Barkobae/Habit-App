@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../models/user.dart';
 import '../services/auth_service.dart';
 import '../services/country_service.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
-  /// The email used to look up the logged-in user on load.
   final String currentEmail;
-
-  /// Called with the updated username after a successful save, so the
-  /// app bar on the home screen can refresh.
   final ValueChanged<AppUser> onUpdated;
 
   const PersonalInfoScreen({
@@ -24,11 +19,9 @@ class PersonalInfoScreen extends StatefulWidget {
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   static const _blue = Color(0xFF1976D2);
-
   final _formKey        = GlobalKey<FormState>();
   final _authService    = AuthService();
   final _countryService = CountryService();
-
   final _usernameCtrl = TextEditingController();
   final _emailCtrl    = TextEditingController();
   final _passwordCtrl = TextEditingController();
@@ -89,8 +82,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     });
   }
 
-  // ── Country picker ──────────────────────────────────────────────────
-
   Future<void> _openCountryPicker() async {
     await showModalBottomSheet(
       context: context,
@@ -109,8 +100,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       ),
     );
   }
-
-  // ── Save ────────────────────────────────────────────────────────────
 
   Future<void> _save() async {
     final formValid = _formKey.currentState!.validate();
@@ -139,7 +128,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       return;
     }
 
-    // Update the tracked email in case the user changed it.
     _originalEmail = _emailCtrl.text.trim();
 
     final updatedUser = AppUser(
@@ -155,8 +143,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         backgroundColor: Colors.green.shade600));
   }
 
-  // ── Validators ──────────────────────────────────────────────────────
-
   String? _required(String? v, String field) =>
       (v == null || v.trim().isEmpty) ? 'Please enter your $field' : null;
 
@@ -167,8 +153,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         ? null
         : 'Please enter a valid email address';
   }
-
-  // ── Build ────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -300,8 +284,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     ),
 
                     const SizedBox(height: 24),
-
-                    // ── Save button ────────────────────────────────────
                     FilledButton(
                       onPressed: _saving ? null : _save,
                       style: FilledButton.styleFrom(
@@ -339,8 +321,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         child: child,
       );
 }
-
-// ── Country picker bottom sheet (shared with sign-up) ────────────────────
 
 class _CountryPickerSheet extends StatefulWidget {
   final List<Country> countries;

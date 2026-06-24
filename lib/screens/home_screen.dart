@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../models/habit.dart';
 import '../models/task.dart';
 import '../services/habit_service.dart';
+import '../services/task_service.dart';
 import 'configure_habits_screen.dart';
 import 'login_screen.dart';
+import 'notifications_screen.dart';
 import 'personal_info_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   static const _blue = Color(0xFF1976D2);
   final _habitService = HabitService();
+  final _taskService  = TaskService();
 
   final List<Task> _tasks = [];
   List<Habit> _habits = [];
@@ -34,6 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _displayUsername = widget.username;
     _currentEmail    = widget.email;
     _loadHabits();
+    _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    final tasks = await _taskService.loadTasks();
+    if (mounted) setState(() { _tasks.addAll(tasks); });
   }
 
   Future<void> _loadHabits() async {
@@ -63,14 +72,17 @@ class _HomeScreenState extends State<HomeScreen> {
         habitId: habitId,
       ));
     });
+    _taskService.saveTasks(_tasks);
   }
 
   void _markDone(String id) {
     setState(() => _tasks.firstWhere((t) => t.id == id).isDone = true);
+    _taskService.saveTasks(_tasks);
   }
 
   void _deleteTask(String id) {
     setState(() => _tasks.removeWhere((t) => t.id == id));
+    _taskService.saveTasks(_tasks);
   }
 
   // ── FAB: show habit picker bottom sheet ──────────────────────────────
@@ -87,19 +99,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (result == null || !mounted) return;
 
-    // 1. Add to the home screen task list
-    _addTask(result.name, result.color, habitId: result.habitId);
-
-    // 2. Re-read latest saved habits, append the new one, save back
-    final existing = await _habitService.loadHabits();
     final newHabit = Habit(
-      id: result.habitId,
-      name: result.name,
+      id   : result.habitId,
+      name : result.name,
       color: result.color ?? Colors.transparent,
     );
-    final updated = [...existing, newHabit];
-    await _habitService.saveHabits(updated);
-    if (mounted) setState(() => _habits = updated);
+
+    // Persist habit first, then add task so both stores are consistent.
+    await _habitService.addHabit(newHabit);
+    _addTask(result.name, result.color, habitId: result.habitId);
+
+    final updated = await _habitService.loadHabits();
+    if (mounted) setState(() => _habits = List.from(updated));
   }
 
   // ── drawer ────────────────────────────────────────────────────────────
@@ -160,7 +171,12 @@ class _HomeScreenState extends State<HomeScreen> {
           _drawerItem(
             icon: Icons.notifications_none,
             label: 'Notifications',
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => const NotificationsScreen(),
+              ));
+            },
           ),
           _drawerItem(
             icon: Icons.logout,

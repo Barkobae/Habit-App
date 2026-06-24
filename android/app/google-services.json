@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "628790831583",
+    "project_id": "habitapp-2e623",
+    "storage_bucket": "habitapp-2e623.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628790831583:android:1c542f537b6c96ff27bc6a",
+        "android_client_info": {
+          "package_name": "com.example.habit_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj2iYL2vsIIg0VU8yys9hPmlV5JztEA3M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

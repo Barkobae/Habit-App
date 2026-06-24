@@ -15,9 +15,6 @@ const List<MapEntry<String, Color>> kHabitColors = [
   MapEntry('Pink',   Color(0xFFE91E63)),
 ];
 
-/// Shows every habit the user has created from the home screen.
-/// Allows changing the colour or deleting a habit — but NOT adding new
-/// ones (habits are added via the + FAB on the home screen).
 class ConfigureHabitsScreen extends StatefulWidget {
   const ConfigureHabitsScreen({super.key});
 
@@ -44,20 +41,15 @@ class _ConfigureHabitsScreenState extends State<ConfigureHabitsScreen> {
   }
 
   Future<void> _updateColor(Habit habit, Color color) async {
-    final updated = _habits.map((h) {
-      if (h.id == habit.id) {
-        return Habit(id: h.id, name: h.name, color: color);
-      }
-      return h;
-    }).toList();
-    setState(() => _habits = updated);
-    await _service.saveHabits(updated);
+    await _service.updateColor(habit.id, color);
+    final updated = await _service.loadHabits();
+    if (mounted) setState(() => _habits = List.from(updated));
   }
 
   Future<void> _delete(String id) async {
-    final updated = _habits.where((h) => h.id != id).toList();
-    setState(() => _habits = updated);
-    await _service.saveHabits(updated);
+    await _service.deleteHabit(id);
+    final updated = await _service.loadHabits();
+    if (mounted) setState(() => _habits = List.from(updated));
   }
 
   @override
@@ -90,8 +82,6 @@ class _ConfigureHabitsScreenState extends State<ConfigureHabitsScreen> {
                   itemBuilder: (_, i) {
                     final h = _habits[i];
                     final isNone = h.color == Colors.transparent;
-                    // Find the matching entry in the colour list so the
-                    // dropdown shows the right selected value.
                     final currentEntry = kHabitColors.firstWhere(
                       (e) => e.value == h.color,
                       orElse: () => kHabitColors.first,
@@ -108,7 +98,6 @@ class _ConfigureHabitsScreenState extends State<ConfigureHabitsScreen> {
                         ),
                         child: Row(
                           children: [
-                            // Colour circle
                             CircleAvatar(
                               backgroundColor: isNone
                                   ? const Color(0xFFDDDDDD)
@@ -120,8 +109,6 @@ class _ConfigureHabitsScreenState extends State<ConfigureHabitsScreen> {
                                   : null,
                             ),
                             const SizedBox(width: 12),
-
-                            // Name + colour dropdown
                             Expanded(
                               child: Column(
                                 crossAxisAlignment:
@@ -132,7 +119,6 @@ class _ConfigureHabitsScreenState extends State<ConfigureHabitsScreen> {
                                           fontWeight: FontWeight.w600,
                                           fontSize: 15)),
                                   const SizedBox(height: 6),
-                                  // Inline colour picker
                                   Container(
                                     height: 36,
                                     padding: const EdgeInsets.symmetric(
@@ -190,8 +176,6 @@ class _ConfigureHabitsScreenState extends State<ConfigureHabitsScreen> {
                                 ],
                               ),
                             ),
-
-                            // Delete
                             IconButton(
                               icon: const Icon(Icons.delete,
                                   color: Colors.red),
