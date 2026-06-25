@@ -27,7 +27,7 @@ class HabitService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final raw   = prefs.getString(_key);
-      if (raw == null || raw.isEmpty) {
+      if (raw==null || raw.isEmpty) {
         _cache = [];
       } else {
         final list = jsonDecode(raw) as List<dynamic>;
@@ -66,7 +66,7 @@ class HabitService {
   Future<void> updateColor(String id, Color color) async {
     await loadHabits();
     final updated = _cache!.map((h) {
-      return h.id == id ? Habit(id: h.id, name: h.name, color: color) : h;
+      return h.id==id ? Habit(id: h.id, name: h.name, color: color) : h;
     }).toList();
     await saveHabits(updated);
   }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Modal dialog invoked by the + FAB. The user types a task name and
-/// confirms — the caller receives the name via [onAdd].
 class AddTaskDialog extends StatefulWidget {
   const AddTaskDialog({super.key});
 

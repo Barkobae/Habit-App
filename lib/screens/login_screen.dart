@@ -4,23 +4,21 @@ import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'sign_up_screen.dart';
 
-/// User Story 2 (Application login) + Story 3 (error feedback when
-/// fields are empty or credentials are incorrect).
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState()=>_LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _formKey=GlobalKey<FormState>();
+  final _emailController=TextEditingController();
+  final _passwordController=TextEditingController();
 
-  final _authService = AuthService();
-  bool _obscurePassword = true;
-  bool _isSubmitting = false;
+  final _authService=AuthService();
+  bool _obscurePassword=true;
+  bool _isSubmitting=false;
   String? _loginError;
 
   @override
@@ -31,34 +29,31 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    setState(() => _loginError = null);
-
-    // Inline validators catch empty fields before any login attempt
-    // is made (User Story 3).
+    setState(()=>_loginError=null);
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isSubmitting = true);
+    setState(()=>_isSubmitting=true);
 
-    final result = await _authService.login(
+    final result=await _authService.login(
       email: _emailController.text.trim(),
       password: _passwordController.text,
     );
 
     if (!mounted) return;
-    setState(() => _isSubmitting = false);
+    setState(()=>_isSubmitting=false);
 
     if (result.success) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => HomeScreen(
+          builder: (_)=>HomeScreen(
             username: result.message,
             email: result.user?.email ?? _emailController.text.trim(),
           ),
         ),
       );
     } else {
-      // Incorrect email/password message (User Story 3).
-      setState(() => _loginError = result.message);
+      // Incorrect email/password message
+      setState(()=>_loginError=result.message);
     }
   }
 
@@ -138,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      validator: (v) => _requiredValidator(v, 'email'),
+                      validator: (v)=>_requiredValidator(v, 'email'),
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -150,15 +145,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           icon: Icon(_obscurePassword
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined),
-                          onPressed: () => setState(
-                            () => _obscurePassword = !_obscurePassword,
+                          onPressed: ()=>setState(
+                            ()=>_obscurePassword=!_obscurePassword,
                           ),
                         ),
                       ),
                       obscureText: _obscurePassword,
                       textInputAction: TextInputAction.done,
-                      validator: (v) => _requiredValidator(v, 'password'),
-                      onFieldSubmitted: (_) => _handleLogin(),
+                      validator: (v)=>_requiredValidator(v, 'password'),
+                      onFieldSubmitted: (_)=>_handleLogin(),
                     ),
                     const SizedBox(height: 24),
                     FilledButton(
@@ -182,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (_) => const SignUpScreen(),
+                            builder: (_)=>const SignUpScreen(),
                           ),
                         );
                       },

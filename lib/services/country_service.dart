@@ -7,35 +7,35 @@ class Country {
 }
 
 class CountryService {
-  static const _url = 'https://restcountries.com/v3.1/all?fields=name,flag';
+  static const _url='https://restcountries.com/v3.1/all?fields=name,flag';
   static List<Country>? _cache;
 
   Future<List<Country>> fetchCountries() async {
     if (_cache != null) return _cache!;
 
     try {
-      final response = await http
+      final response=await http
           .get(Uri.parse(_url))
           .timeout(const Duration(seconds:8));
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        final countries = data.map((e) {
-          final nameObj = e['name'] as Map<String, dynamic>;
+      if (response.statusCode==200) {
+        final List<dynamic> data=jsonDecode(response.body);
+        final countries=data.map((e) {
+          final nameObj=e['name'] as Map<String, dynamic>;
           return Country(
             name:nameObj['common'] as String? ?? '',
             
           );
-        }).where((c) => c.name.isNotEmpty).toList()
-          ..sort((a, b) => a.name.compareTo(b.name));
-        _cache = countries;
+        }).where((c)=>c.name.isNotEmpty).toList()
+          ..sort((a, b)=>a.name.compareTo(b.name));
+        _cache=countries;
         return countries;
       }
     } catch (_) {
       // Fall through to bundled list
     }
 
-    _cache = _bundled;
+    _cache=_bundled;
     return _bundled;
   }
 }

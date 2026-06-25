@@ -8,7 +8,7 @@ class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUpScreen> createState()=>_SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -23,9 +23,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _obscurePassword = false;
   bool _isSubmitting    = false;
 
-  // Country picker state
   List<Country> _countries    = [];
-  List<Country> _filtered     = [];
+  List<Country> _filtered = [];
   Country?      _selectedCountry;
   bool          _loadingCountries = true;
   String?       _countryError;
@@ -50,14 +49,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final list = await _countryService.fetchCountries();
       if (mounted) {
         setState(() {
-          _countries         = list;
-          _filtered          = list;
-          _loadingCountries  = false;
+          _countries= list;
+          _filtered= list;
+          _loadingCountries= false;
         });
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _loadingCountries = false);
+        setState(()=>_loadingCountries = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text(
@@ -66,8 +65,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     }
   }
-
-  // ── Country search bottom sheet ────────────────────────────────────
 
   Future<void> _openCountryPicker() async {
     // Reset filter each time the sheet opens.
@@ -78,7 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (ctx) => _CountryPickerSheet(
+      builder: (ctx)=>_CountryPickerSheet(
         countries : _countries,
         onSelect  : (country) {
           setState(() {
@@ -91,22 +88,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // ── Submit ──────────────────────────────────────────────────────────
-
   Future<void> _handleSignUp() async {
     // Validate text fields
     final formValid = _formKey.currentState!.validate();
 
-    // Validate country separately (not inside a TextFormField)
     if (_selectedCountry == null) {
-      setState(() => _countryError = 'Please select your country');
+      setState(()=>_countryError = 'Please select your country');
     } else {
-      setState(() => _countryError = null);
+      setState(()=>_countryError = null);
     }
 
     if (!formValid || _selectedCountry == null) return;
 
-    setState(() => _isSubmitting = true);
+    setState(()=>_isSubmitting = true);
 
     final result = await _authService.register(
       username : _usernameController.text.trim(),
@@ -116,22 +110,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
 
     if (!mounted) return;
-    setState(() => _isSubmitting = false);
+    setState(()=>_isSubmitting = false);
 
     if (result.success) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(result.message),
           backgroundColor: Colors.green.shade600));
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginScreen()));
+          MaterialPageRoute(builder: (_)=>const LoginScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(result.message),
           backgroundColor: Theme.of(context).colorScheme.error));
     }
   }
-
-  // ── Validators ──────────────────────────────────────────────────────
 
   String? _required(String? value, String field) =>
       (value == null || value.trim().isEmpty) ? 'Please enter your $field' : null;
@@ -144,7 +136,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         : 'Please enter a valid email address';
   }
 
-  // ── Build ───────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 24),
 
-                    // ── Username ───────────────────────────────────────
+                  
                     TextFormField(
                       controller: _usernameController,
                       decoration: const InputDecoration(
@@ -179,11 +170,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         prefixIcon: Icon(Icons.person_outline),
                       ),
                       textInputAction: TextInputAction.next,
-                      validator: (v) => _required(v, 'username'),
+                      validator: (v)=>_required(v, 'username'),
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Email ──────────────────────────────────────────
+                  
                     TextFormField(
                       controller: _emailController,
                       decoration: const InputDecoration(
@@ -196,7 +187,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Password ───────────────────────────────────────
+                  
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
@@ -206,17 +197,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           icon: Icon(_obscurePassword
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined),
-                          onPressed: () => setState(
-                              () => _obscurePassword = !_obscurePassword),
+                          onPressed: ()=>setState(
+                              ()=>_obscurePassword = !_obscurePassword),
                         ),
                       ),
                       obscureText: _obscurePassword,
                       textInputAction: TextInputAction.next,
-                      validator: (v) => _required(v, 'password'),
+                      validator: (v)=>_required(v, 'password'),
                     ),
                     const SizedBox(height: 16),
 
-                    // ── Country picker ─────────────────────────────────
                     GestureDetector(
                       onTap: _loadingCountries ? null : _openCountryPicker,
                       child: InputDecorator(
@@ -252,7 +242,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // ── Submit ─────────────────────────────────────────
+                    
                     FilledButton(
                       onPressed: _isSubmitting ? null : _handleSignUp,
                       style: FilledButton.styleFrom(
@@ -269,9 +259,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(height: 16),
 
                     TextButton(
-                      onPressed: () => Navigator.of(context).pushReplacement(
+                      onPressed: ()=>Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                              builder: (_) => const LoginScreen())),
+                              builder: (_)=>const LoginScreen())),
                       child:
                           const Text('Already have an account? Log in'),
                     ),
@@ -286,8 +276,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-// ── Country picker bottom sheet ───────────────────────────────────────────
-
 class _CountryPickerSheet extends StatefulWidget {
   final List<Country> countries;
   final ValueChanged<Country> onSelect;
@@ -296,7 +284,7 @@ class _CountryPickerSheet extends StatefulWidget {
       {required this.countries, required this.onSelect});
 
   @override
-  State<_CountryPickerSheet> createState() => _CountryPickerSheetState();
+  State<_CountryPickerSheet> createState()=>_CountryPickerSheetState();
 }
 
 class _CountryPickerSheetState extends State<_CountryPickerSheet> {
@@ -333,9 +321,9 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
       initialChildSize: 0.75,
       maxChildSize: 0.95,
       minChildSize: 0.4,
-      builder: (_, scrollCtrl) => Column(
+      builder: (_, scrollCtrl)=>Column(
         children: [
-          // Handle
+        
           const SizedBox(height: 8),
           Container(
             width: 40,
@@ -346,14 +334,11 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
             ),
           ),
           const SizedBox(height: 12),
-
-          // Title
           const Text('Select Country',
               style:
                   TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
 
-          // Search bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
@@ -388,7 +373,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                       return ListTile(
                         
                         title: Text(c.name),
-                        onTap: () => widget.onSelect(c),
+                        onTap: ()=>widget.onSelect(c),
                       );
                     },
                   ),

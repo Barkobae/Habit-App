@@ -14,7 +14,7 @@ class PersonalInfoScreen extends StatefulWidget {
   });
 
   @override
-  State<PersonalInfoScreen> createState() => _PersonalInfoScreenState();
+  State<PersonalInfoScreen> createState()=>_PersonalInfoScreenState();
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
@@ -64,8 +64,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     Country? matched;
     if (user != null && user.country.isNotEmpty) {
       matched = countries.cast<Country?>().firstWhere(
-            (c) => c!.name == user.country,
-            orElse: () => null,
+            (c)=>c!.name == user.country,
+            orElse: ()=>null,
           );
     }
 
@@ -88,7 +88,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (ctx) => _CountryPickerSheet(
+      builder: (ctx)=>_CountryPickerSheet(
         countries: _countries,
         onSelect: (c) {
           setState(() {
@@ -104,11 +104,11 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   Future<void> _save() async {
     final formValid = _formKey.currentState!.validate();
     if (_selectedCountry == null) {
-      setState(() => _countryError = 'Please select your country');
+      setState(()=>_countryError = 'Please select your country');
     }
     if (!formValid || _selectedCountry == null) return;
 
-    setState(() => _saving = true);
+    setState(()=>_saving = true);
 
     final error = await _authService.updateUser(
       currentEmail: _originalEmail,
@@ -119,7 +119,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     );
 
     if (!mounted) return;
-    setState(() => _saving = false);
+    setState(()=>_saving = false);
 
     if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -176,7 +176,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Avatar header ──────────────────────────────────
+                    
                     Center(
                       child: CircleAvatar(
                         radius: 36,
@@ -192,20 +192,20 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // ── Section card ───────────────────────────────────
+                    
                     _card(
                       child: Column(
                         children: [
                           // Username
                           TextFormField(
                             controller: _usernameCtrl,
-                            onChanged: (_) => setState(() {}),
+                            onChanged: (_)=>setState(() {}),
                             decoration: const InputDecoration(
                               labelText: 'Username',
                               prefixIcon: Icon(Icons.person_outline),
                               border: InputBorder.none,
                             ),
-                            validator: (v) => _required(v, 'username'),
+                            validator: (v)=>_required(v, 'username'),
                           ),
                           const Divider(height: 1),
 
@@ -234,11 +234,11 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                                 icon: Icon(_obscurePassword
                                     ? Icons.visibility_outlined
                                     : Icons.visibility_off_outlined),
-                                onPressed: () => setState(() =>
+                                onPressed: ()=>setState(() =>
                                     _obscurePassword = !_obscurePassword),
                               ),
                             ),
-                            validator: (v) => _required(v, 'password'),
+                            validator: (v)=>_required(v, 'password'),
                           ),
                           const Divider(height: 1),
 
@@ -312,7 +312,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     );
   }
 
-  Widget _card({required Widget child}) => Container(
+  Widget _card({required Widget child})=>Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -330,7 +330,7 @@ class _CountryPickerSheet extends StatefulWidget {
       {required this.countries, required this.onSelect});
 
   @override
-  State<_CountryPickerSheet> createState() => _CountryPickerSheetState();
+  State<_CountryPickerSheet> createState()=>_CountryPickerSheetState();
 }
 
 class _CountryPickerSheetState extends State<_CountryPickerSheet> {
@@ -354,7 +354,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
       _filtered = q.isEmpty
           ? widget.countries
           : widget.countries
-              .where((c) => c.name.toLowerCase().contains(q.toLowerCase()))
+              .where((c)=>c.name.toLowerCase().contains(q.toLowerCase()))
               .toList();
     });
   }
@@ -366,7 +366,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
       initialChildSize: 0.75,
       maxChildSize: 0.95,
       minChildSize: 0.4,
-      builder: (_, scrollCtrl) => Column(
+      builder: (_, scrollCtrl)=>Column(
         children: [
           const SizedBox(height: 8),
           Container(
@@ -413,7 +413,7 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
                       return ListTile(
                         
                         title: Text(c.name),
-                        onTap: () => widget.onSelect(c),
+                        onTap: ()=>widget.onSelect(c),
                       );
                     },
                   ),

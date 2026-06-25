@@ -29,21 +29,21 @@ class TaskService {
   // ── Serialization ─────────────────────────────────────────────────────
 
   Map<String, dynamic> _taskToJson(Task t) => {
-        'id'        : t.id,
-        'name'      : t.name,
-        'isDone'    : t.isDone,
-        'color'     : t.color?.value,
-        'habitId'   : t.habitId,
-        'createdAt' : t.createdAt.toIso8601String(),
+        'id': t.id,
+        'name': t.name,
+        'isDone': t.isDone,
+        'color': t.color?.value,
+        'habitId': t.habitId,
+        'createdAt': t.createdAt.toIso8601String(),
         'activities': t.activities.map(_activityToJson).toList(),
       };
 
   Task _taskFromJson(Map<String, dynamic> j) => Task(
-        id        : j['id'] as String,
-        name      : j['name'] as String,
-        isDone    : j['isDone'] as bool? ?? false,
-        color     : j['color'] != null ? Color(j['color'] as int) : null,
-        habitId   : j['habitId'] as String?,
+        id: j['id'] as String,
+        name: j['name'] as String,
+        isDone: j['isDone'] as bool? ?? false,
+        color: j['color'] != null ? Color(j['color'] as int) : null,
+        habitId: j['habitId'] as String?,
         createdAt : DateTime.tryParse(j['createdAt'] as String? ?? '') ??
                     DateTime.now(),
         activities: ((j['activities'] as List<dynamic>?) ?? [])
@@ -52,14 +52,14 @@ class TaskService {
       );
 
   Map<String, dynamic> _activityToJson(TaskActivity a) => {
-        'id'   : a.id,
-        'name' : a.name,
+        'id': a.id,
+        'name': a.name,
         'color': a.color.value,
       };
 
   TaskActivity _activityFromJson(Map<String, dynamic> j) => TaskActivity(
-        id    : j['id'] as String,
-        name  : j['name'] as String,
-        color : Color(j['color'] as int),
+        id: j['id'] as String,
+        name: j['name'] as String,
+        color: Color(j['color'] as int),
       );
 }

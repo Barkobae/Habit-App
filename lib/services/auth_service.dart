@@ -17,7 +17,7 @@ class AuthService {
   Future<List<AppUser>> _loadUsers() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_usersKey);
-    if (raw == null || raw.isEmpty) return [];
+    if (raw==null || raw.isEmpty) return [];
     final List<dynamic> decoded = jsonDecode(raw);
     return decoded
         .map((e) => AppUser.fromJson(e as Map<String, dynamic>))
@@ -38,7 +38,7 @@ class AuthService {
   }) async {
     final users = await _loadUsers();
     final alreadyExists =
-        users.any((u) => u.email.toLowerCase() == email.toLowerCase());
+        users.any((u) => u.email.toLowerCase()==email.toLowerCase());
     if (alreadyExists) {
       return const AuthResult(
           false, 'An account with this email already exists.');
@@ -55,8 +55,8 @@ class AuthService {
   }) async {
     final users = await _loadUsers();
     final matches = users.where((u) =>
-        u.email.toLowerCase() == email.toLowerCase() &&
-        u.password == password);
+        u.email.toLowerCase()==email.toLowerCase() &&
+        u.password==password);
     if (matches.isEmpty) {
       return const AuthResult(false,
           'Login attempt was unsuccessful. Check your email and password.');
@@ -68,7 +68,7 @@ class AuthService {
   Future<AppUser?> getUserByEmail(String email) async {
     final users = await _loadUsers();
     final matches =
-        users.where((u) => u.email.toLowerCase() == email.toLowerCase());
+        users.where((u) => u.email.toLowerCase()==email.toLowerCase());
     return matches.isEmpty ? null : matches.first;
   }
 
@@ -81,11 +81,11 @@ class AuthService {
   }) async {
     final users = await _loadUsers();
     final idx = users.indexWhere(
-        (u) => u.email.toLowerCase() == currentEmail.toLowerCase());
-    if (idx == -1) return 'User not found.';
+        (u) => u.email.toLowerCase()==currentEmail.toLowerCase());
+    if (idx==-1) return 'User not found.';
     if (email.toLowerCase() != currentEmail.toLowerCase()) {
       final taken = users.any((u) =>
-          u.email.toLowerCase() == email.toLowerCase() &&
+          u.email.toLowerCase()==email.toLowerCase() &&
           u.email.toLowerCase() != currentEmail.toLowerCase());
       if (taken) return 'Another account already uses that email.';
     }
